@@ -1,11 +1,12 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "use express, connect mongoose for CRUD",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "startmon": "nodemon server.js"
+    "startmon": "nodemon server.js",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
@@ -17,9 +18,22 @@
     "express": "^4.17.1",
     "express-formidable": "^1.2.0",
     "express-session": "^1.17.2",
+    "lodash": "^4.17.21",
     "mongodb": "^4.0.1",
     "mongoose": "^5.13.5",
     "nodemon": "^2.0.12",
     "tslib": "^2.3.0"
-  }
+  },
+  "bin": {
+    "server": "www.js"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dumbokim/community1_server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dumbokim/community1_server/issues"
+  },
+  "homepage": "https://github.com/dumbokim/community1_server#readme"
 }

@@ -2,6 +2,7 @@
 const express = require('express');
 const app = express();
 app.use(express.json());
+
 // must
 const cors = require('cors');
 app.use(cors());
@@ -15,14 +16,14 @@ AdminBro.registerAdapter(AdminBroMongoose);
 // mongoose 
 const mongoose = require('mongoose');
 const ComDb1 = require('./models/ComDb1'); // collection1
+const FreeTable = require('./models/FreeTable'); // Free board collection
+const SchoolTable = require('./models/SchoolTable');
 
-
-require('./models/ComDb1')
 
 const run = async() => {
 
   // DB Connection
-  const connection = await mongoose.connect(
+  await mongoose.connect(
     "mongodb://localhost:27017/community_db",
     { useNewUrlParser: true,   // error occured before 
       useUnifiedTopology: true, // put these two
@@ -31,14 +32,12 @@ const run = async() => {
   );
 
   const adminBro = new AdminBro({
-    resources:[ComDb1],
+    resources:[ComDb1, FreeTable, SchoolTable],
     rootPath: '/admin',
   })
 
   const router = AdminBroExpress.buildRouter(adminBro); 
   app.use(adminBro.options.rootPath, router);
-
-
 }
 
 run()
@@ -54,7 +53,7 @@ mongoose.connect(
 */
 
 
-// Sending Data from Front End
+// Sending Data to
 app.post('/addpost', async (req, res) => {
   // body means data object
   const title = req.body.title;
@@ -67,12 +66,53 @@ app.post('/addpost', async (req, res) => {
   res.send(posting);
 })
 
+// Sending data to free table
+app.post('/writefree', async (req, res) => {
+  // body means data object
+  const title = req.body.title;
+  const desc = req.body.description;
+  const pwd = req.body.password;
+  const posting = new FreeTable({title:title, description: desc, password:pwd});
+
+  // use async to avoid error (wait until "const posting" rendered)
+  await posting.save(); // await for "save()"? or "const posting"?
+  res.send(posting);
+})
+
+app.post('/writeschool', async (req, res) => {
+  // body means data object
+  const title = req.body.title;
+  const desc = req.body.description;
+  const pwd = req.body.password;
+  const posting = new SchoolTable({title:title, description: desc, password:pwd});
+
+  // use async to avoid error (wait until "const posting" rendered)
+  await posting.save(); // await for "save()"? or "const posting"?
+  res.send(posting);
+})
+
 // get data from db
 app.get('/getlists', (req, res) => {
   ComDb1.find({}, (err, result) => {
     if(err) res.send(err);
     else res.send(result);
   });
+})
+
+// get data from free collection
+app.get('/freelists', (req, res) => {
+  FreeTable.find({}, (err, result) => {
+    if(err) res.send(err);
+    else res.send(result);
+  })
+})
+
+// get data from school collection
+app.get('/schoollists', (req, res) => {
+  SchoolTable.find({}, (err, result) => {
+    if(err) res.send(err);
+    else res.send(result);
+  })
 })
 
 // Server Port
